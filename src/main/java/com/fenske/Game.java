@@ -25,28 +25,34 @@ public class Game {
         } else {
             moveStones(pit, player2Side, player1Side);
         }
-        return new GameState(player1Side.pits, player1Side.gravaHal, player2Side.pits, player2Side.gravaHal);
+        return new GameState(player1Side, player2Side);
     }
 
-//    private void moveStones(int pit, int[] pits, int gravaHal, int[] opposingPits) {
-    private void moveStones(int pit, Side side, Side opposingSide) {
-        int stones = side.pits[pit];
-        side.pits[pit] = 0;
-        int i = pit + 1;
-        while(stones > 0 && i < 6) {
-            side.pits[i]++;
-            i++;
-            stones--;
-        }
-        if (stones > 0) {
-            side.gravaHal++;
-            stones--;
-        }
-        int j = 0;
-        while(stones > 0 && j < 6) {
-            opposingSide.pits[j]++;
-            j++;
-            stones--;
+    private void moveStones(int pickedPit, Side side, Side opposingSide) {
+        int stones = side.pits[pickedPit];
+        side.pits[pickedPit] = 0;
+        int currentPit = pickedPit + 1;
+        while(stones > 0) {
+            while (stones > 0 && currentPit < 6) {
+                side.pits[currentPit]++;
+                currentPit++;
+                stones--;
+            }
+            if (stones > 0) {
+                side.gravaHal++;
+                stones--;
+                currentPit = 0;
+            }
+            while (stones > 0 && currentPit < 6) {
+                opposingSide.pits[currentPit]++;
+                currentPit++;
+                stones--;
+            }
+            if (stones > 0) {
+                opposingSide.gravaHal++;
+                stones--;
+                currentPit = 0;
+            }
         }
     }
 }

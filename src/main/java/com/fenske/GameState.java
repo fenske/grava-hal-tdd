@@ -7,11 +7,11 @@ public class GameState {
     private final int[] player2Pits;
     private final int player2GravaHal;
 
-    public GameState(int[] player1Pits, int player1GravaHal, int[] player2Pits, int player2GravaHal) {
-        this.player1Pits = player1Pits;
-        this.player1GravaHal = player1GravaHal;
-        this.player2Pits = player2Pits;
-        this.player2GravaHal = player2GravaHal;
+    public GameState(Side side1, Side side2) {
+        this.player1Pits = side1.pits;
+        this.player1GravaHal = side1.gravaHal;
+        this.player2Pits = side2.pits;
+        this.player2GravaHal = side2.gravaHal;
     }
 
     public int[] player1Pits() {

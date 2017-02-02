@@ -26,16 +26,39 @@ public class GameTest {
 
     @Test
     public void makeTurn() throws Exception {
-        GameState currentState = game.nextActivePlayer().makeTurn(game, 1);
-        assertArrayEquals(new int[]{6,0,7,7,7,7}, currentState.player1Pits());
-        assertEquals(1, currentState.player1GravaHal());
-        assertArrayEquals(new int[]{7,6,6,6,6,6}, currentState.player2Pits());
-        assertEquals(0, currentState.player2GravaHal());
+        GameState currentGameState = game.nextActivePlayer().makeTurn(game, 1);
 
-        currentState = game.nextActivePlayer().makeTurn(game,1);
-        assertArrayEquals(new int[]{7,0,7,7,7,7}, currentState.player1Pits());
-        assertEquals(1, currentState.player1GravaHal());
-        assertArrayEquals(new int[]{7,0,7,7,7,7}, currentState.player2Pits());
-        assertEquals(1, currentState.player2GravaHal());
+        assertArrayEquals(new int[]{6,0,7,7,7,7}, currentGameState.player1Pits());
+        assertEquals(1, currentGameState.player1GravaHal());
+        assertArrayEquals(new int[]{7,6,6,6,6,6}, currentGameState.player2Pits());
+        assertEquals(0, currentGameState.player2GravaHal());
+
+        currentGameState = game.nextActivePlayer().makeTurn(game,1);
+
+        assertArrayEquals(new int[]{7,0,7,7,7,7}, currentGameState.player1Pits());
+        assertEquals(1, currentGameState.player1GravaHal());
+        assertArrayEquals(new int[]{7,0,7,7,7,7}, currentGameState.player2Pits());
+        assertEquals(1, currentGameState.player2GravaHal());
+
+        currentGameState = game.nextActivePlayer().makeTurn(game,2);
+
+        assertArrayEquals(new int[]{7,0,0,8,8,8}, currentGameState.player1Pits());
+        assertEquals(2, currentGameState.player1GravaHal());
+        assertArrayEquals(new int[]{8,1,8,7,7,7}, currentGameState.player2Pits());
+        assertEquals(1, currentGameState.player2GravaHal());
+
+        currentGameState = game.nextActivePlayer().makeTurn(game,5);
+
+        assertArrayEquals(new int[]{8,1,1,9,9,9}, currentGameState.player1Pits());
+        assertEquals(2, currentGameState.player1GravaHal());
+        assertArrayEquals(new int[]{8,1,8,7,7,0}, currentGameState.player2Pits());
+        assertEquals(2, currentGameState.player2GravaHal());
+
+        currentGameState = game.nextActivePlayer().makeTurn(game,5);
+
+        assertArrayEquals(new int[]{9,1,1,9,9,0}, currentGameState.player1Pits());
+        assertEquals(3, currentGameState.player1GravaHal());
+        assertArrayEquals(new int[]{9,2,9,8,8,1}, currentGameState.player2Pits());
+        assertEquals(3, currentGameState.player2GravaHal());
     }
 }
