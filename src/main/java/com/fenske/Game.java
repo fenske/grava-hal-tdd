@@ -9,12 +9,17 @@ public class Game {
     private final Side player1Side = new Side();
     private final Side player2Side = new Side();
 
+    private boolean isLandedInGravaHal;
+
     public Game(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
     }
 
     public Player nextActivePlayer() {
+        if (isLandedInGravaHal) {
+            return activePlayer;
+        }
         activePlayer = player1.equals(activePlayer) ? player2 : player1;
         return activePlayer;
     }
@@ -35,6 +40,9 @@ public class Game {
         while(stones > 0) {
             stones = updatePits(side, currentPit, stones);
             stones = updateGravaHal(side, stones);
+            if (stones == 0) {
+                isLandedInGravaHal = true;
+            }
             stones = updatePits(opposingSide, 0, stones);
             currentPit = 0;
         }

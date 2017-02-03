@@ -65,4 +65,11 @@ public class GameTest {
             new int[]{9,2,1,9,9,0}, 3,
             new int[]{9,2,9,8,8,1}, 2);
     }
+
+    @Test
+    public void lastStoneLandedInOwnGravalHal() throws Exception {
+        game.nextActivePlayer().makeTurn(game, 0);
+        assertEquals(player1, game.nextActivePlayer());
+
+    }
 }
