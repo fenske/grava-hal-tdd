@@ -31,19 +31,19 @@ public class Game {
     private void moveStones(int pickedPit, Side side, Side opposingSide) {
         int stones = side.pits[pickedPit];
         side.pits[pickedPit] = 0;
+        Side currentSide = side;
         int currentPit = pickedPit + 1;
         while(stones > 0) {
-            stones = updatePits(side.pits, currentPit, stones);
-            stones = updateGravaHal(side, stones);
-            stones = updatePits(opposingSide.pits, 0, stones);
-            stones = updateGravaHal(opposingSide, stones);
+            stones = updatePits(currentSide, currentPit, stones);
+            stones = updateGravaHal(currentSide, stones);
+            currentSide = currentSide == side ? opposingSide : side;
             currentPit = 0;
         }
     }
 
-    private int updatePits(int[] pits, int pickedPit, int stones) {
-        for (int currentPit = pickedPit; currentPit < pits.length && stones > 0; currentPit++) {
-            pits[currentPit]++;
+    private int updatePits(Side side, int pickedPit, int stones) {
+        for (int currentPit = pickedPit; currentPit < side.pits.length && stones > 0; currentPit++) {
+            side.pits[currentPit]++;
             stones--;
         }
         return stones;
