@@ -33,26 +33,27 @@ public class Game {
         side.pits[pickedPit] = 0;
         int currentPit = pickedPit + 1;
         while(stones > 0) {
-            while (stones > 0 && currentPit < 6) {
-                side.pits[currentPit]++;
-                currentPit++;
-                stones--;
-            }
-            if (stones > 0) {
-                side.gravaHal++;
-                stones--;
-                currentPit = 0;
-            }
-            while (stones > 0 && currentPit < 6) {
-                opposingSide.pits[currentPit]++;
-                currentPit++;
-                stones--;
-            }
-            if (stones > 0) {
-                opposingSide.gravaHal++;
-                stones--;
-                currentPit = 0;
-            }
+            stones = updatePits(side.pits, currentPit, stones);
+            stones = updateGravaHal(side, stones);
+            stones = updatePits(opposingSide.pits, 0, stones);
+            stones = updateGravaHal(opposingSide, stones);
+            currentPit = 0;
         }
+    }
+
+    private int updatePits(int[] pits, int pickedPit, int stones) {
+        for (int currentPit = pickedPit; currentPit < pits.length && stones > 0; currentPit++) {
+            pits[currentPit]++;
+            stones--;
+        }
+        return stones;
+    }
+
+    private int updateGravaHal(Side side, int stones) {
+        if (stones > 0) {
+            side.gravaHal++;
+            stones--;
+        }
+        return stones;
     }
 }
