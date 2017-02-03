@@ -62,7 +62,7 @@ public class GameTest {
         currentGameState = game.nextActivePlayer().makeTurn(game,5);
 
         assertGameState(currentGameState,
-            new int[]{9,1,1,9,9,0}, 3,
-            new int[]{9,2,9,8,8,1}, 3);
+            new int[]{9,2,1,9,9,0}, 3,
+            new int[]{9,2,9,8,8,1}, 2);
     }
 }

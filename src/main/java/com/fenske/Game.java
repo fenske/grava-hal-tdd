@@ -34,9 +34,9 @@ public class Game {
         Side currentSide = side;
         int currentPit = pickedPit + 1;
         while(stones > 0) {
-            stones = updatePits(currentSide, currentPit, stones);
-            stones = updateGravaHal(currentSide, stones);
-            currentSide = currentSide == side ? opposingSide : side;
+            stones = updatePits(side, currentPit, stones);
+            stones = updateGravaHal(side, stones);
+            stones = updatePits(opposingSide, 0, stones);
             currentPit = 0;
         }
     }
