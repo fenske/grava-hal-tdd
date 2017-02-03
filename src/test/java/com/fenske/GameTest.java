@@ -67,9 +67,22 @@ public class GameTest {
     }
 
     @Test
-    public void lastStoneLandedInOwnGravalHal() throws Exception {
+    public void lastStoneLandInOwnGravalHal() throws Exception {
         game.nextActivePlayer().makeTurn(game, 0);
         assertEquals(player1, game.nextActivePlayer());
+    }
 
+    @Test
+    public void lastStoneLandInEmptyPit() throws Exception {
+        Side player1Side = new Side(new int[]{1,0,1,1,1,1}, 0);
+        Side player2Side = new Side(new int[]{1,1,1,1,1,1}, 0);
+        GameState initialState = new GameState(player1Side, player2Side);
+        game = new Game(initialState, player1, player2);
+
+        GameState currentGameState = game.nextActivePlayer().makeTurn(game,0);
+
+        assertGameState(currentGameState,
+            new int[]{0,0,1,1,1,1}, 2,
+            new int[]{1,0,1,1,1,1}, 0);
     }
 }
