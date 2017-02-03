@@ -9,7 +9,7 @@ public class Game {
     private final Side player1Side = new Side();
     private final Side player2Side = new Side();
 
-    private boolean isLandedInGravaHal;
+    private boolean isLandedInGravaHal; // TODO Get rid of this smell
 
     public Game(Player player1, Player player2) {
         this.player1 = player1;
