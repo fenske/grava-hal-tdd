@@ -73,13 +73,18 @@ public class GameTest {
         assertEquals(player1, game.nextActivePlayer());
     }
 
+    private Game initGame(int[] player1Pits, int player1GravaHal,
+                          int[] player2Pits, int player2GravaHal) {
+        Side player1Side = new Side(player1Pits, player1GravaHal);
+        Side player2Side = new Side(player2Pits, player2GravaHal);
+        GameState initialState = new GameState(player1Side, player2Side);
+        return new Game(initialState, player1, player2);
+    }
+
     @Test
     public void lastStoneLandInEmptyPit() throws Exception {
-        Side player1Side = new Side(new int[]{1,0,1,1,1,1}, 0);
-        Side player2Side = new Side(new int[]{1,1,1,1,1,1}, 0);
-        GameState initialState = new GameState(player1Side, player2Side);
-        game = new Game(initialState, player1, player2);
-
+        game = initGame(new int[]{1,0,1,1,1,1}, 0,
+                        new int[]{1,1,1,1,1,1}, 0);
         GameState currentGameState = game.nextActivePlayer().makeTurn(game,0);
 
         assertGameState(currentGameState,
@@ -89,11 +94,8 @@ public class GameTest {
 
     @Test(expected=IllegalStateException.class)
     public void gameOver() throws Exception {
-        Side player1Side = new Side(new int[]{0,0,0,0,0,1}, 0);
-        Side player2Side = new Side(new int[]{1,1,1,1,1,1}, 0);
-        GameState initialState = new GameState(player1Side, player2Side);
-        game = new Game(initialState, player1, player2);
-
+        game = initGame(new int[]{0,0,0,0,0,1}, 0,
+            new int[]{1,1,1,1,1,1}, 0);
         GameState resultState = game.nextActivePlayer().makeTurn(game,5);
 
         assertTrue(game.isOver());
@@ -102,18 +104,15 @@ public class GameTest {
             new int[]{0,0,0,0,0,0}, 1,
             new int[]{0,0,0,0,0,0}, 6);
 
-
         game.nextActivePlayer().makeTurn(game,0);
     }
 
     @Test
     public void tie() throws Exception {
-        Side player1Side = new Side(new int[]{0,0,0,0,0,1}, 0);
-        Side player2Side = new Side(new int[]{0,0,0,0,0,1}, 0);
-        GameState initialState = new GameState(player1Side, player2Side);
-        game = new Game(initialState, player1, player2);
-
+        game = initGame(new int[]{0,0,0,0,0,1}, 0,
+            new int[]{0,0,0,0,0,1}, 0);
         game.nextActivePlayer().makeTurn(game,5);
+
         assertTrue(game.isOver());
         assertEquals("Tie", game.winner());
     }
