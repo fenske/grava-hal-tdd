@@ -49,18 +49,23 @@ public class Game {
         side.pits[pickedPit] = 0;
         while(currentMoveState.remainingStones > 0) {
             updatePits(side, currentMoveState);
-            if (currentMoveState.remainingStones == 0 && side.pits[currentMoveState.currentPit - 1] == 1) {
+            if (canSteal(currentMoveState, side)) {
                 stealStonesAndUpdateGravaHal(side, opposingSide, currentMoveState);
-            }
-            updateGravaHal(side, currentMoveState);
-            if (currentMoveState.remainingStones == 0) {
-                isLandedInGravaHal = true;
             } else {
-                currentMoveState.currentPit = 0;
-                updatePits(opposingSide, currentMoveState);
-                currentMoveState.currentPit = 0;
+                updateGravaHal(side, currentMoveState);
+                if (currentMoveState.remainingStones == 0) {
+                    isLandedInGravaHal = true;
+                } else {
+                    currentMoveState.currentPit = 0;
+                    updatePits(opposingSide, currentMoveState);
+                    currentMoveState.currentPit = 0;
+                }
             }
         }
+    }
+
+    private boolean canSteal(MoveState currentMoveState, Side side) {
+        return currentMoveState.remainingStones == 0 && side.pits[currentMoveState.currentPit - 1] == 1;
     }
 
     private void stealStonesAndUpdateGravaHal(Side side, Side opposingSide, MoveState currentMoveState) {
