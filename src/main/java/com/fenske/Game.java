@@ -1,5 +1,7 @@
 package com.fenske;
 
+import java.util.stream.IntStream;
+
 public class Game {
 
     private final Player player1;
@@ -10,6 +12,7 @@ public class Game {
     private final Side player2Side;
 
     private boolean isLandedInGravaHal; // TODO Get rid of this smell
+    private boolean isOver;
 
     public Game(Player player1, Player player2) {
         this.player1 = player1;
@@ -36,10 +39,16 @@ public class Game {
     }
 
     public GameState updateState(String name, int pit) {
+        if (isOver) {
+            throw new IllegalStateException("Game over");
+        }
         if (player1.name().equals(name)) {
             moveStones(pit, player1Side, player2Side);
         } else {
             moveStones(pit, player2Side, player1Side);
+        }
+        if (isAnyoneOutOfStones()) {
+            isOver = true;
         }
         return new GameState(player1Side, player2Side);
     }
@@ -73,6 +82,14 @@ public class Game {
         side.gravaHal += side.pits[lastEmptyPit] + opposingSide.pits[lastEmptyPit];
         side.pits[lastEmptyPit] = 0;
         opposingSide.pits[lastEmptyPit] = 0;
+    }
+
+    public boolean isOver() {
+        return isOver;
+    }
+
+    public boolean isAnyoneOutOfStones() {
+        return IntStream.of(player1Side.pits).sum() == 0 || IntStream.of(player2Side.pits).sum() == 0;
     }
 
     private class MoveState {
