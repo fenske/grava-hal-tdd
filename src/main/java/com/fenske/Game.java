@@ -1,5 +1,6 @@
 package com.fenske;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Game {
@@ -48,9 +49,20 @@ public class Game {
             moveStones(pit, player2Side, player1Side);
         }
         if (isAnyoneOutOfStones()) {
+            calculateResult();
             isOver = true;
         }
         return new GameState(player1Side, player2Side);
+    }
+
+    private void calculateResult() {
+        calculateSide(player1Side);
+        calculateSide(player2Side);
+    }
+
+    private void calculateSide(Side side) {
+        Arrays.stream(side.pits).forEach(pit -> side.gravaHal += pit);
+        Arrays.fill(side.pits, 0);
     }
 
     private void moveStones(int pickedPit, Side side, Side opposingSide) {
@@ -88,8 +100,21 @@ public class Game {
         return isOver;
     }
 
-    public boolean isAnyoneOutOfStones() {
+    private boolean isAnyoneOutOfStones() {
         return IntStream.of(player1Side.pits).sum() == 0 || IntStream.of(player2Side.pits).sum() == 0;
+    }
+
+    public String winner() {
+        if (!isOver) {
+            throw new IllegalStateException("Game is not over yet");
+        }
+        if (player1Side.gravaHal > player2Side.gravaHal) {
+            return player1.name();
+        } else if (player2Side.gravaHal > player1Side.gravaHal) {
+            return player2.name();
+        } else {
+            return "Tie";
+        }
     }
 
     private class MoveState {

@@ -94,10 +94,32 @@ public class GameTest {
         GameState initialState = new GameState(player1Side, player2Side);
         game = new Game(initialState, player1, player2);
 
-        GameState currentGameState = game.nextActivePlayer().makeTurn(game,5);
+        GameState resultState = game.nextActivePlayer().makeTurn(game,5);
 
         assertTrue(game.isOver());
+        assertEquals("Player2", game.winner());
+        assertGameState(resultState,
+            new int[]{0,0,0,0,0,0}, 1,
+            new int[]{0,0,0,0,0,0}, 6);
+
 
         game.nextActivePlayer().makeTurn(game,0);
+    }
+
+    @Test
+    public void tie() throws Exception {
+        Side player1Side = new Side(new int[]{0,0,0,0,0,1}, 0);
+        Side player2Side = new Side(new int[]{0,0,0,0,0,1}, 0);
+        GameState initialState = new GameState(player1Side, player2Side);
+        game = new Game(initialState, player1, player2);
+
+        game.nextActivePlayer().makeTurn(game,5);
+        assertTrue(game.isOver());
+        assertEquals("Tie", game.winner());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void gameNotOver() throws Exception {
+        assertEquals("", game.winner());
     }
 }
