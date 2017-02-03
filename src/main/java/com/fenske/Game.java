@@ -33,6 +33,7 @@ public class Game {
 
     public Player nextActivePlayer() {
         if (isLandedInGravaHal) {
+            isLandedInGravaHal = false;
             return activePlayer;
         }
         activePlayer = player1.equals(activePlayer) ? player2 : player1;
@@ -49,13 +50,13 @@ public class Game {
             moveStones(pit, player2Side, player1Side);
         }
         if (isAnyoneOutOfStones()) {
-            calculateResult();
+            calculateFinalResult();
             isOver = true;
         }
         return new GameState(player1Side, player2Side);
     }
 
-    private void calculateResult() {
+    private void calculateFinalResult() {
         calculateSide(player1Side);
         calculateSide(player2Side);
     }

@@ -121,4 +121,16 @@ public class GameTest {
     public void gameNotOver() throws Exception {
         assertEquals("", game.winner());
     }
+
+    @Test
+    public void changePlayerIfLastNotInGravaHal() throws Exception {
+        game = initGame(new int[]{0,0,0,0,3,1}, 0,
+            new int[]{1,1,1,1,1,1}, 0);
+
+        game.nextActivePlayer().makeTurn(game,5);
+        Player activePlayer = game.nextActivePlayer();
+        assertEquals(player1, activePlayer);
+        activePlayer.makeTurn(game, 4);
+        assertEquals(player2, game.nextActivePlayer());
+    }
 }
