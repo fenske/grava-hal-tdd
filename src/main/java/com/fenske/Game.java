@@ -31,7 +31,6 @@ public class Game {
     private void moveStones(int pickedPit, Side side, Side opposingSide) {
         int stones = side.pits[pickedPit];
         side.pits[pickedPit] = 0;
-        Side currentSide = side;
         int currentPit = pickedPit + 1;
         while(stones > 0) {
             stones = updatePits(side, currentPit, stones);
