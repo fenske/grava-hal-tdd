@@ -12,7 +12,7 @@ public class Player {
         return game.updateState(name, pit);
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 }

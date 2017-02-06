@@ -21,46 +21,46 @@ public class GameTest {
     }
 
     @Test
-    public void nextActivePlayer() throws Exception {
-        assertEquals(player1, game.nextActivePlayer());
+    public void testNextActivePlayer() throws Exception {
+        assertEquals(player1, game.getNextActivePlayer());
     }
 
     private void assertGameState(GameState gameState,
                                  int[] player1Pits, int player1Gravahal,
                                  int[] player2Pits, int player2Gravahal) {
-        assertArrayEquals(player1Pits, gameState.player1Pits());
-        assertEquals(player1Gravahal, gameState.player1GravaHal());
-        assertArrayEquals(player2Pits, gameState.player2Pits());
-        assertEquals(player2Gravahal, gameState.player2GravaHal());
+        assertArrayEquals(player1Pits, gameState.getPlayer1Pits());
+        assertEquals(player1Gravahal, gameState.getPlayer1GravaHal());
+        assertArrayEquals(player2Pits, gameState.getPlayer2Pits());
+        assertEquals(player2Gravahal, gameState.getPlayer2GravaHal());
     }
 
     @Test
-    public void makeTurn() throws Exception {
-        GameState currentGameState = game.nextActivePlayer().makeTurn(game, 1);
+    public void testMakeTurn() throws Exception {
+        GameState currentGameState = game.getNextActivePlayer().makeTurn(game, 1);
 
         assertGameState(currentGameState,
             new int[]{6,0,7,7,7,7}, 1,
             new int[]{7,6,6,6,6,6}, 0);
 
-        currentGameState = game.nextActivePlayer().makeTurn(game,1);
+        currentGameState = game.getNextActivePlayer().makeTurn(game,1);
 
         assertGameState(currentGameState,
             new int[]{7,0,7,7,7,7}, 1,
             new int[]{7,0,7,7,7,7}, 1);
 
-        currentGameState = game.nextActivePlayer().makeTurn(game,2);
+        currentGameState = game.getNextActivePlayer().makeTurn(game,2);
 
         assertGameState(currentGameState,
             new int[]{7,0,0,8,8,8}, 2,
             new int[]{8,1,8,7,7,7}, 1);
 
-        currentGameState = game.nextActivePlayer().makeTurn(game,5);
+        currentGameState = game.getNextActivePlayer().makeTurn(game,5);
 
         assertGameState(currentGameState,
             new int[]{8,1,1,9,9,9}, 2,
             new int[]{8,1,8,7,7,0}, 2);
 
-        currentGameState = game.nextActivePlayer().makeTurn(game,5);
+        currentGameState = game.getNextActivePlayer().makeTurn(game,5);
 
         assertGameState(currentGameState,
             new int[]{9,2,1,9,9,0}, 3,
@@ -68,24 +68,24 @@ public class GameTest {
     }
 
     @Test
-    public void lastStoneLandInOwnGravalHal() throws Exception {
-        game.nextActivePlayer().makeTurn(game, 0);
-        assertEquals(player1, game.nextActivePlayer());
+    public void testLastStoneLandInOwnGravalHal() throws Exception {
+        game.getNextActivePlayer().makeTurn(game, 0);
+        assertEquals(player1, game.getNextActivePlayer());
     }
 
     private Game initGame(int[] player1Pits, int player1GravaHal,
                           int[] player2Pits, int player2GravaHal) {
-        Side player1Side = new Side(player1Pits, player1GravaHal);
-        Side player2Side = new Side(player2Pits, player2GravaHal);
-        GameState initialState = new GameState(player1Side, player2Side);
-        return new Game(initialState, player1, player2);
+        PlayerSide player1Side = new PlayerSide(player1Pits, player1GravaHal);
+        PlayerSide player2Side = new PlayerSide(player2Pits, player2GravaHal);
+        GameState initialGameState = new GameState(player1Side, player2Side);
+        return new Game(initialGameState, player1, player2);
     }
 
     @Test
-    public void lastStoneLandInEmptyPit() throws Exception {
+    public void testLastStoneLandInEmptyPit() throws Exception {
         game = initGame(new int[]{1,0,1,1,1,1}, 0,
                         new int[]{1,1,1,1,1,1}, 0);
-        GameState currentGameState = game.nextActivePlayer().makeTurn(game,0);
+        GameState currentGameState = game.getNextActivePlayer().makeTurn(game,0);
 
         assertGameState(currentGameState,
             new int[]{0,0,1,1,1,1}, 2,
@@ -93,44 +93,44 @@ public class GameTest {
     }
 
     @Test(expected=IllegalStateException.class)
-    public void gameOver() throws Exception {
+    public void testGameOver() throws Exception {
         game = initGame(new int[]{0,0,0,0,0,1}, 0,
-            new int[]{1,1,1,1,1,1}, 0);
-        GameState resultState = game.nextActivePlayer().makeTurn(game,5);
+                        new int[]{1,1,1,1,1,1}, 0);
+        GameState gameScore = game.getNextActivePlayer().makeTurn(game,5);
 
         assertTrue(game.isOver());
-        assertEquals("Player2", game.winner());
-        assertGameState(resultState,
+        assertEquals("Player2", game.getWinner());
+        assertGameState(gameScore,
             new int[]{0,0,0,0,0,0}, 1,
             new int[]{0,0,0,0,0,0}, 6);
 
-        game.nextActivePlayer().makeTurn(game,0);
+        game.getNextActivePlayer().makeTurn(game,0);
     }
 
     @Test
-    public void tie() throws Exception {
+    public void testTie() throws Exception {
         game = initGame(new int[]{0,0,0,0,0,1}, 0,
-            new int[]{0,0,0,0,0,1}, 0);
-        game.nextActivePlayer().makeTurn(game,5);
+                        new int[]{0,0,0,0,0,1}, 0);
+        game.getNextActivePlayer().makeTurn(game,5);
 
         assertTrue(game.isOver());
-        assertEquals("Tie", game.winner());
+        assertEquals("No winner. It's a tie", game.getWinner());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void gameNotOver() throws Exception {
-        assertEquals("", game.winner());
+    public void testGameNotOver() throws Exception {
+        assertEquals("", game.getWinner());
     }
 
     @Test
-    public void changePlayerIfLastNotInGravaHal() throws Exception {
+    public void testChangePlayerIfLastNotInGravaHal() throws Exception {
         game = initGame(new int[]{0,0,0,0,3,1}, 0,
             new int[]{1,1,1,1,1,1}, 0);
 
-        game.nextActivePlayer().makeTurn(game,5);
-        Player activePlayer = game.nextActivePlayer();
+        game.getNextActivePlayer().makeTurn(game,5);
+        Player activePlayer = game.getNextActivePlayer();
         assertEquals(player1, activePlayer);
         activePlayer.makeTurn(game, 4);
-        assertEquals(player2, game.nextActivePlayer());
+        assertEquals(player2, game.getNextActivePlayer());
     }
 }
