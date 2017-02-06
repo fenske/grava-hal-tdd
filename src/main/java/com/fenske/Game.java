@@ -100,26 +100,28 @@ public class Game {
     }
 
     private class Go {
-        private int selectedPit;
         private PlayerSide playerSide;
         private PlayerSide opposingPlayerSide;
         private GoState goState;
 
         public Go(int selectedPit, PlayerSide playerSide, PlayerSide opposingPlayerSide) {
-            this.selectedPit = selectedPit;
             this.playerSide = playerSide;
             this.opposingPlayerSide = opposingPlayerSide;
+            initGoState(selectedPit, playerSide);
+        }
+
+        private void initGoState(int selectedPit, PlayerSide playerSide) {
             goState = new GoState(playerSide.pits[selectedPit], selectedPit + 1);
+            playerSide.pits[selectedPit] = 0;
         }
 
         public void make() {
-            playerSide.pits[selectedPit] = 0;
             while(isInActiveState()) {
                 updatePlayerPits(playerSide, goState);
-                updateGravaHal(playerSide, goState);
-                if (isOutOfStones()) {
-                    isLandedInGravaHal = true;
-                } else {
+                if (hasRemainingStones()) {
+                    updateGravaHal(playerSide, goState);
+                }
+                if (hasRemainingStones()) {
                     goState.currentPit = 0;
                     updatePlayerPits(opposingPlayerSide, goState);
                     goState.currentPit = 0;
@@ -127,8 +129,8 @@ public class Game {
             }
         }
 
-        private boolean isOutOfStones() {
-            return goState.remainingStones == 0;
+        private boolean hasRemainingStones() {
+            return goState.remainingStones > 0;
         }
 
         private boolean isInActiveState() {
@@ -157,9 +159,10 @@ public class Game {
         }
 
         private void updateGravaHal(PlayerSide playerSide, GoState goState) {
-            if (goState.remainingStones > 0) {
-                playerSide.gravaHal++;
-                goState.remainingStones--;
+            playerSide.gravaHal++;
+            goState.remainingStones--;
+            if (goState.remainingStones == 0) {
+                isLandedInGravaHal = true;
             }
         }
 
