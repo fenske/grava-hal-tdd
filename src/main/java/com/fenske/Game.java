@@ -67,34 +67,7 @@ public class Game {
     }
 
     private void moveStones(int pickedPit, PlayerSide playerSide, PlayerSide opposingPlayerSide) {
-        MoveState currentMoveState = new MoveState(playerSide.pits[pickedPit], pickedPit + 1);
-        playerSide.pits[pickedPit] = 0;
-        while(currentMoveState.remainingStones > 0) {
-            updatePits(playerSide, currentMoveState);
-            if (canSteal(currentMoveState, playerSide)) {
-                stealStonesAndUpdateGravaHal(playerSide, opposingPlayerSide, currentMoveState);
-            } else {
-                updateGravaHal(playerSide, currentMoveState);
-                if (currentMoveState.remainingStones == 0) {
-                    isLandedInGravaHal = true;
-                } else {
-                    currentMoveState.currentPit = 0;
-                    updatePits(opposingPlayerSide, currentMoveState);
-                    currentMoveState.currentPit = 0;
-                }
-            }
-        }
-    }
-
-    private boolean canSteal(MoveState currentMoveState, PlayerSide playerSide) {
-        return currentMoveState.remainingStones == 0 && playerSide.pits[currentMoveState.currentPit - 1] == 1;
-    }
-
-    private void stealStonesAndUpdateGravaHal(PlayerSide playerSide, PlayerSide opposingPlayerSide, MoveState currentMoveState) {
-        int lastEmptyPit = currentMoveState.currentPit - 1;
-        playerSide.gravaHal += playerSide.pits[lastEmptyPit] + opposingPlayerSide.pits[lastEmptyPit];
-        playerSide.pits[lastEmptyPit] = 0;
-        opposingPlayerSide.pits[lastEmptyPit] = 0;
+        new Go(pickedPit, playerSide, opposingPlayerSide).make();
     }
 
     public boolean isOver() {
@@ -126,27 +99,78 @@ public class Game {
         }
     }
 
-    private class MoveState {
-        int remainingStones;
-        int currentPit;
+    private class Go {
+        private int selectedPit;
+        private PlayerSide playerSide;
+        private PlayerSide opposingPlayerSide;
+        private GoState goState;
 
-        public MoveState(int remainingStones, int currentPit) {
-            this.remainingStones = remainingStones;
-            this.currentPit = currentPit;
+        public Go(int selectedPit, PlayerSide playerSide, PlayerSide opposingPlayerSide) {
+            this.selectedPit = selectedPit;
+            this.playerSide = playerSide;
+            this.opposingPlayerSide = opposingPlayerSide;
+            goState = new GoState(playerSide.pits[selectedPit], selectedPit + 1);
         }
-    }
 
-    private void updatePits(PlayerSide playerSide, MoveState moveState) {
-        for (; moveState.currentPit < playerSide.pits.length && moveState.remainingStones > 0; moveState.currentPit++) {
-            playerSide.pits[moveState.currentPit]++;
-            moveState.remainingStones--;
+        public void make() {
+            playerSide.pits[selectedPit] = 0;
+            while(isInActiveState()) {
+                updatePlayerPits(playerSide, goState);
+                updateGravaHal(playerSide, goState);
+                if (isOutOfStones()) {
+                    isLandedInGravaHal = true;
+                } else {
+                    goState.currentPit = 0;
+                    updatePlayerPits(opposingPlayerSide, goState);
+                    goState.currentPit = 0;
+                }
+            }
         }
-    }
 
-    private void updateGravaHal(PlayerSide playerSide, MoveState moveState) {
-        if (moveState.remainingStones > 0) {
-            playerSide.gravaHal++;
-            moveState.remainingStones--;
+        private boolean isOutOfStones() {
+            return goState.remainingStones == 0;
+        }
+
+        private boolean isInActiveState() {
+            return goState.remainingStones > 0;
+        }
+
+        private void updatePlayerPits(PlayerSide playerSide, GoState goState) {
+            for (; goState.currentPit < playerSide.pits.length && goState.remainingStones > 0; goState.currentPit++) {
+                playerSide.pits[goState.currentPit]++;
+                goState.remainingStones--;
+            }
+            if (canStealStonesFromOpposingPlayer(goState, playerSide)) {
+                stealStonesFromOpposingPlayerAndUpdateGravaHal(playerSide, opposingPlayerSide, goState);
+            }
+        }
+
+        private boolean canStealStonesFromOpposingPlayer(GoState currentGoState, PlayerSide playerSide) {
+            return currentGoState.remainingStones == 0 && playerSide.pits[currentGoState.currentPit - 1] == 1;
+        }
+
+        private void stealStonesFromOpposingPlayerAndUpdateGravaHal(PlayerSide playerSide, PlayerSide opposingPlayerSide, GoState currentGoState) {
+            int lastEmptyPit = currentGoState.currentPit - 1;
+            playerSide.gravaHal += playerSide.pits[lastEmptyPit] + opposingPlayerSide.pits[lastEmptyPit];
+            playerSide.pits[lastEmptyPit] = 0;
+            opposingPlayerSide.pits[lastEmptyPit] = 0;
+        }
+
+        private void updateGravaHal(PlayerSide playerSide, GoState goState) {
+            if (goState.remainingStones > 0) {
+                playerSide.gravaHal++;
+                goState.remainingStones--;
+            }
+        }
+
+        private class GoState {
+            int remainingStones;
+            int currentPit;
+
+            public GoState(int remainingStones, int currentPit) {
+                this.remainingStones = remainingStones;
+                this.currentPit = currentPit;
+            }
         }
     }
 }
