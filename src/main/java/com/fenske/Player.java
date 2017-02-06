@@ -8,7 +8,7 @@ public class Player {
         this.name = name;
     }
 
-    public GameState makeTurn(Game game, int pit) {
+    public GameState makeGo(Game game, int pit) {
         return game.updateState(name, pit);
     }
 
