@@ -114,14 +114,17 @@ public class Game {
         }
 
         public void make() {
-            while(isInActiveState()) {
-                updatePlayerPits(playerSide);
+            while(hasRemainingStones()) {
+                updatePits(playerSide);
+                if (canStealStonesFromOpposingPlayer(playerSide)) {
+                    stealStonesFromOpposingPlayerAndUpdateGravaHal(playerSide, opposingPlayerSide);
+                }
                 if (hasRemainingStones()) {
                     updateGravaHal(playerSide);
                 }
                 if (hasRemainingStones()) {
                     currentPit = 0;
-                    updatePlayerPits(opposingPlayerSide);
+                    updatePits(opposingPlayerSide);
                     currentPit = 0;
                 }
             }
@@ -131,17 +134,10 @@ public class Game {
             return remainingStones > 0;
         }
 
-        private boolean isInActiveState() {
-            return remainingStones > 0;
-        }
-
-        private void updatePlayerPits(PlayerSide playerSide) {
+        private void updatePits(PlayerSide playerSide) {
             for (; currentPit < playerSide.pits.length && remainingStones > 0; currentPit++) {
                 playerSide.pits[currentPit]++;
                 remainingStones--;
-            }
-            if (canStealStonesFromOpposingPlayer(playerSide)) {
-                stealStonesFromOpposingPlayerAndUpdateGravaHal(playerSide, opposingPlayerSide);
             }
         }
 
