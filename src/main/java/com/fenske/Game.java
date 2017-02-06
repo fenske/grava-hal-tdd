@@ -50,19 +50,19 @@ public class Game {
             moveStones(pit, player2Side, player1Side);
         }
         if (isAnyoneOutOfStones()) {
-            calculateGameScore();
+            calculateFinalScore();
             setOver(true);
         }
         return new GameState(player1Side, player2Side);
     }
 
-    private void calculateGameScore() {
-        calculatePlayerSide(player1Side);
-        calculatePlayerSide(player2Side);
+    private void calculateFinalScore() {
+        calculatePlayerScore(player1Side);
+        calculatePlayerScore(player2Side);
     }
 
-    private void calculatePlayerSide(PlayerSide playerSide) {
-        Arrays.stream(playerSide.pits).forEach(pit -> playerSide.gravaHal += pit);
+    private void calculatePlayerScore(PlayerSide playerSide) {
+        Arrays.stream(playerSide.pits).forEach(stone -> playerSide.gravaHal += stone);
         Arrays.fill(playerSide.pits, 0);
     }
 
@@ -106,7 +106,11 @@ public class Game {
     }
 
     private boolean isAnyoneOutOfStones() {
-        return IntStream.of(player1Side.pits).sum() == 0 || IntStream.of(player2Side.pits).sum() == 0;
+        return isPlayerOutOfStones(player1Side.pits) || isPlayerOutOfStones(player2Side.pits);
+    }
+
+    private boolean isPlayerOutOfStones(int[] playerPits) {
+        return IntStream.of(playerPits).sum() == 0;
     }
 
     public String getWinner() {
