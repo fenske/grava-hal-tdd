@@ -13,7 +13,7 @@ public class Game {
     private final PlayerSide player2Side;
 
     private boolean isLandedInGravaHal;
-    private boolean isOver;
+    private boolean gameOver;
 
     public Game(Player player1, Player player2) {
         this.player1 = player1;
@@ -22,12 +22,12 @@ public class Game {
         player2Side = new PlayerSide();
     }
 
-    public Game(GameState initialGameState, Player player1, Player player2) {
+    public Game(Score initialScore, Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
 
-        player1Side = new PlayerSide(initialGameState.getPlayer1Pits(), initialGameState.getPlayer1GravaHal());
-        player2Side = new PlayerSide(initialGameState.getPlayer2Pits(), initialGameState.getPlayer2GravaHal());
+        player1Side = new PlayerSide(initialScore.getPlayer1Pits(), initialScore.getPlayer1GravaHal());
+        player2Side = new PlayerSide(initialScore.getPlayer2Pits(), initialScore.getPlayer2GravaHal());
     }
 
 
@@ -40,20 +40,20 @@ public class Game {
         return activePlayer;
     }
 
-    public GameState updateState(String name, int pit) {
-        if (isOver()) {
+    public Score updateScore(String playerName, int selectedPit) {
+        if (isGameOver()) {
             throw new IllegalStateException("Game over");
         }
-        if (player1.getName().equals(name)) {
-            moveStones(pit, player1Side, player2Side);
+        if (player1.getName().equals(playerName)) {
+            moveStones(selectedPit, player1Side, player2Side);
         } else {
-            moveStones(pit, player2Side, player1Side);
+            moveStones(selectedPit, player2Side, player1Side);
         }
-        if (isAnyoneOutOfStones()) {
+        if (anyoneIsOutOfStones()) {
             calculateFinalScore();
-            setOver(true);
+            gameOver = true;
         }
-        return new GameState(player1Side, player2Side);
+        return new Score(player1Side, player2Side);
     }
 
     private void calculateFinalScore() {
@@ -70,15 +70,11 @@ public class Game {
         new Go(pickedPit, playerSide, opposingPlayerSide).make();
     }
 
-    public boolean isOver() {
-        return isOver;
+    public boolean isGameOver() {
+        return gameOver;
     }
 
-    private void setOver(boolean over) {
-        isOver = over;
-    }
-
-    private boolean isAnyoneOutOfStones() {
+    private boolean anyoneIsOutOfStones() {
         return isPlayerOutOfStones(player1Side.pits) || isPlayerOutOfStones(player2Side.pits);
     }
 
@@ -87,7 +83,7 @@ public class Game {
     }
 
     public String getWinner() {
-        if (!isOver()) {
+        if (!isGameOver()) {
             throw new IllegalStateException("Game is not over yet");
         }
         if (player1Side.gravaHal > player2Side.gravaHal) {

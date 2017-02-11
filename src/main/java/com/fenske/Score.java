@@ -1,13 +1,13 @@
 package com.fenske;
 
-public class GameState {
+public class Score {
 
     private final int[] player1Pits;
     private final int player1GravaHal;
     private final int[] player2Pits;
     private final int player2GravaHal;
 
-    public GameState(PlayerSide playerSide1, PlayerSide playerSide2) {
+    public Score(PlayerSide playerSide1, PlayerSide playerSide2) {
         this.player1Pits = playerSide1.pits;
         this.player1GravaHal = playerSide1.gravaHal;
         this.player2Pits = playerSide2.pits;
