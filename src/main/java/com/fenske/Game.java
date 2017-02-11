@@ -21,7 +21,7 @@ public class Game {
         if (gameOver) {
             throw new IllegalStateException("Game over");
         }
-        if (player1.name.equals(activePlayer.name)) {
+        if (activePlayer.name.equals(player1.name)) {
             activePlayer = moveStones(selectedPit, player1, player2);
         } else {
             activePlayer = moveStones(selectedPit, player2, player1);

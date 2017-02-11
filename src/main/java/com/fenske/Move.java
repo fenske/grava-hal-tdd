@@ -19,7 +19,7 @@ class Move {
 
     Player make() {
         while (hasRemainingStones()) {
-            updatePits(player);
+            currentPit = updatePits(currentPit, player);
             if (canStealStonesFromOpposingPlayer(player)) {
                 stealStonesFromOpposingPlayerAndUpdateGravaHal(player, opposingPlayer);
             }
@@ -27,8 +27,7 @@ class Move {
                 updateGravaHal(player);
             }
             if (hasRemainingStones()) {
-                currentPit = 0;
-                updatePits(opposingPlayer);
+                updatePits(0, opposingPlayer);
                 currentPit = 0;
             }
         }
@@ -39,11 +38,14 @@ class Move {
         return remainingStones > 0;
     }
 
-    private void updatePits(Player player) {
-        for (; currentPit < player.pits.length && remainingStones > 0; currentPit++) {
-            player.pits[currentPit]++;
+    private int updatePits(int startPit, Player player) {
+        int pit = startPit;
+        while (pit < player.pits.length && remainingStones > 0) {
+            player.pits[pit]++;
             remainingStones--;
+            pit++;
         }
+        return pit;
     }
 
     private boolean canStealStonesFromOpposingPlayer(Player player) {
