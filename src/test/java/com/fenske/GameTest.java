@@ -22,7 +22,7 @@ public class GameTest {
 
     @Test
     public void testNextActivePlayer() throws Exception {
-        assertEquals(player1, game.getNextActivePlayer());
+        assertEquals(player1.name, game.getActivePlayerName());
     }
 
     private void assertGameState(Score score,
@@ -36,31 +36,31 @@ public class GameTest {
 
     @Test
     public void testMakeTurn() throws Exception {
-        Score currentScore = game.getNextActivePlayer().makeGo(game, 1);
+        Score currentScore = game.makeMove(1);
 
         assertGameState(currentScore,
             new int[]{6,0,7,7,7,7}, 1,
             new int[]{7,6,6,6,6,6}, 0);
 
-        currentScore = game.getNextActivePlayer().makeGo(game,1);
+        currentScore = game.makeMove(1);
 
         assertGameState(currentScore,
             new int[]{7,0,7,7,7,7}, 1,
             new int[]{7,0,7,7,7,7}, 1);
 
-        currentScore = game.getNextActivePlayer().makeGo(game,2);
+        currentScore = game.makeMove(2);
 
         assertGameState(currentScore,
             new int[]{7,0,0,8,8,8}, 2,
             new int[]{8,1,8,7,7,7}, 1);
 
-        currentScore = game.getNextActivePlayer().makeGo(game,5);
+        currentScore = game.makeMove(5);
 
         assertGameState(currentScore,
             new int[]{8,1,1,9,9,9}, 2,
             new int[]{8,1,8,7,7,0}, 2);
 
-        currentScore = game.getNextActivePlayer().makeGo(game,5);
+        currentScore = game.makeMove(5);
 
         assertGameState(currentScore,
             new int[]{9,2,1,9,9,0}, 3,
@@ -69,8 +69,8 @@ public class GameTest {
 
     @Test
     public void testLastStoneLandInOwnGravalHal() throws Exception {
-        game.getNextActivePlayer().makeGo(game, 0);
-        assertEquals(player1, game.getNextActivePlayer());
+        game.makeMove(0);
+        assertEquals(player1.name, game.getActivePlayerName());
     }
 
     private Game initGame(int[] player1Pits, int player1GravaHal,
@@ -84,7 +84,7 @@ public class GameTest {
     public void testLastStoneLandInEmptyPit() throws Exception {
         game = initGame(new int[]{1,0,1,1,1,1}, 0,
                         new int[]{1,1,1,1,1,1}, 0);
-        Score currentScore = game.getNextActivePlayer().makeGo(game,0);
+        Score currentScore = game.makeMove(0);
 
         assertGameState(currentScore,
             new int[]{0,0,1,1,1,1}, 2,
@@ -95,7 +95,7 @@ public class GameTest {
     public void testGameOver() throws Exception {
         game = initGame(new int[]{0,0,0,0,0,1}, 0,
                         new int[]{1,1,1,1,1,1}, 0);
-        Score gameScore = game.getNextActivePlayer().makeGo(game,5);
+        Score gameScore = game.makeMove(5);
 
         assertTrue(game.isGameOver());
         assertEquals("Player2", game.getWinner());
@@ -103,14 +103,14 @@ public class GameTest {
             new int[]{0,0,0,0,0,0}, 1,
             new int[]{0,0,0,0,0,0}, 6);
 
-        game.getNextActivePlayer().makeGo(game,0);
+        game.makeMove(0);
     }
 
     @Test
     public void testTie() throws Exception {
         game = initGame(new int[]{0,0,0,0,0,1}, 0,
                         new int[]{0,0,0,0,0,1}, 0);
-        game.getNextActivePlayer().makeGo(game,5);
+        game.makeMove(5);
 
         assertTrue(game.isGameOver());
         assertEquals("No winner. It's a tie", game.getWinner());
@@ -126,18 +126,18 @@ public class GameTest {
         game = initGame(new int[]{0,0,0,0,3,1}, 0,
             new int[]{1,1,1,1,1,1}, 0);
 
-        game.getNextActivePlayer().makeGo(game,5);
-        Player activePlayer = game.getNextActivePlayer();
-        assertEquals(player1, activePlayer);
-        activePlayer.makeGo(game, 4);
-        assertEquals(player2, game.getNextActivePlayer());
+        game.makeMove(5);
+        String activePlayerName = game.getActivePlayerName();
+        assertEquals(player1.name, activePlayerName);
+        game.makeMove(4);
+        assertEquals(player2.name, game.getActivePlayerName());
     }
 
     @Test
     public void shouldNotStealStonesFromYourSelf() {
         game = initGame(new int[]{1,1,1,1,1,3}, 0,
             new int[]{1,0,1,1,1,1}, 0);
-        Score gameScore = game.getNextActivePlayer().makeGo(game,5);
+        Score gameScore = game.makeMove(5);
         assertGameState(gameScore,
             new int[]{1,1,1,1,1,0}, 1,
             new int[]{2,1,1,1,1,1}, 0);

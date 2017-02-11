@@ -17,8 +17,4 @@ public class Player {
         this.pits = pits;
         this.gravaHal = gravaHal;
     }
-
-    public Score makeGo(Game game, int pit) {
-        return game.updateScore(name, pit);
-    }
 }
