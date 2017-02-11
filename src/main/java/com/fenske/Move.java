@@ -8,7 +8,7 @@ class Move {
     private int currentPit;
     private boolean isLandedInGravaHal;
 
-    public Move(Game game, int selectedPit, Player player, Player opposingPlayer) {
+    Move(Game game, int selectedPit, Player player, Player opposingPlayer) {
         this.game = game;
         this.player = player;
         this.opposingPlayer = opposingPlayer;
@@ -17,7 +17,7 @@ class Move {
         player.pits[selectedPit] = 0;
     }
 
-    public Player make() {
+    Player make() {
         while (hasRemainingStones()) {
             updatePits(player);
             if (canStealStonesFromOpposingPlayer(player)) {

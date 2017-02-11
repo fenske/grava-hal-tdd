@@ -17,7 +17,7 @@ public class Game {
         activePlayer = player1;
     }
 
-    public Score makeMove(int selectedPit) {
+    public GameScore makeMove(int selectedPit) {
         if (gameOver) {
             throw new IllegalStateException("Game over");
         }
@@ -30,7 +30,7 @@ public class Game {
             calculateFinalScore();
             gameOver = true;
         }
-        return new Score(player1, player2);
+        return new GameScore(player1, player2);
     }
 
     private Player moveStones(int pickedPit, Player player, Player opposingPlayer) {
