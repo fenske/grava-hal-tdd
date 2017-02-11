@@ -1,6 +1,6 @@
 package com.fenske;
 
-public class Player {
+class Player {
 
     final String name;
     final int[] pits;

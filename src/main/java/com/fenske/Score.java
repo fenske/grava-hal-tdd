@@ -1,6 +1,6 @@
 package com.fenske;
 
-public class Score {
+class Score {
 
     private final int[] player1Pits;
     private final int player1GravaHal;

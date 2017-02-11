@@ -1,0 +1,76 @@
+package com.fenske;
+
+class Move {
+    private Game game;
+    private Player player;
+    private Player opposingPlayer;
+    private int remainingStones;
+    private int currentPit;
+    private boolean isLandedInGravaHal;
+
+    public Move(Game game, int selectedPit, Player player, Player opposingPlayer) {
+        this.game = game;
+        this.player = player;
+        this.opposingPlayer = opposingPlayer;
+        this.remainingStones = player.pits[selectedPit];
+        this.currentPit = selectedPit + 1;
+        player.pits[selectedPit] = 0;
+    }
+
+    public Player make() {
+        while (hasRemainingStones()) {
+            updatePits(player);
+            if (canStealStonesFromOpposingPlayer(player)) {
+                stealStonesFromOpposingPlayerAndUpdateGravaHal(player, opposingPlayer);
+            }
+            if (hasRemainingStones()) {
+                updateGravaHal(player);
+            }
+            if (hasRemainingStones()) {
+                currentPit = 0;
+                updatePits(opposingPlayer);
+                currentPit = 0;
+            }
+        }
+        return getNextActivePlayer();
+    }
+
+    private boolean hasRemainingStones() {
+        return remainingStones > 0;
+    }
+
+    private void updatePits(Player player) {
+        for (; currentPit < player.pits.length && remainingStones > 0; currentPit++) {
+            player.pits[currentPit]++;
+            remainingStones--;
+        }
+    }
+
+    private boolean canStealStonesFromOpposingPlayer(Player player) {
+        return remainingStones == 0 && player.pits[currentPit - 1] == 1;
+    }
+
+    private void stealStonesFromOpposingPlayerAndUpdateGravaHal(Player player, Player opposingPlayer) {
+        int lastEmptyPit = currentPit - 1;
+        player.gravaHal += player.pits[lastEmptyPit] + opposingPlayer.pits[lastEmptyPit];
+        player.pits[lastEmptyPit] = 0;
+        opposingPlayer.pits[lastEmptyPit] = 0;
+    }
+
+    private void updateGravaHal(Player player) {
+        player.gravaHal++;
+        remainingStones--;
+        if (remainingStones == 0) {
+            isLandedInGravaHal = true;
+        }
+    }
+
+    private Player getNextActivePlayer() {
+        if (isLandedInGravaHal) {
+            isLandedInGravaHal = false;
+            return game.activePlayer;
+        }
+        game.activePlayer = game.player1.equals(game.activePlayer) ? game.player2 : game.player1;
+        return game.activePlayer;
+    }
+}
