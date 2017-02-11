@@ -33,8 +33,8 @@ public class Game {
         return new GameScore(player1, player2);
     }
 
-    private Player moveStones(int pickedPit, Player player, Player opposingPlayer) {
-        return new Move(this, pickedPit, player, opposingPlayer).make();
+    private Player moveStones(int selectedPit, Player player, Player opposingPlayer) {
+        return new Move(this, selectedPit, player, opposingPlayer).make();
     }
 
     private boolean anyoneIsOutOfStones() {
