@@ -7,11 +7,11 @@ public class Score {
     private final int[] player2Pits;
     private final int player2GravaHal;
 
-    public Score(PlayerSide playerSide1, PlayerSide playerSide2) {
-        this.player1Pits = playerSide1.pits;
-        this.player1GravaHal = playerSide1.gravaHal;
-        this.player2Pits = playerSide2.pits;
-        this.player2GravaHal = playerSide2.gravaHal;
+    public Score(Player player1, Player player2) {
+        this.player1Pits = player1.pits;
+        this.player1GravaHal = player1.gravaHal;
+        this.player2Pits = player2.pits;
+        this.player2GravaHal = player2.gravaHal;
     }
 
     public int[] getPlayer1Pits() {

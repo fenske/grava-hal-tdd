@@ -75,10 +75,9 @@ public class GameTest {
 
     private Game initGame(int[] player1Pits, int player1GravaHal,
                           int[] player2Pits, int player2GravaHal) {
-        PlayerSide player1Side = new PlayerSide(player1Pits, player1GravaHal);
-        PlayerSide player2Side = new PlayerSide(player2Pits, player2GravaHal);
-        Score initialScore = new Score(player1Side, player2Side);
-        return new Game(initialScore, player1, player2);
+        player1 = new Player("Player1", player1Pits, player1GravaHal);
+        player2 = new Player("Player2", player2Pits, player2GravaHal);
+        return new Game(player1, player2);
     }
 
     @Test

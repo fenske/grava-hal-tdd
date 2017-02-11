@@ -9,25 +9,12 @@ public class Game {
     private final Player player2;
     private Player activePlayer;
 
-    private final PlayerSide player1Side;
-    private final PlayerSide player2Side;
-
     private boolean isLandedInGravaHal;
     private boolean gameOver;
 
     public Game(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
-        player1Side = new PlayerSide();
-        player2Side = new PlayerSide();
-    }
-
-    public Game(Score initialScore, Player player1, Player player2) {
-        this.player1 = player1;
-        this.player2 = player2;
-
-        player1Side = new PlayerSide(initialScore.getPlayer1Pits(), initialScore.getPlayer1GravaHal());
-        player2Side = new PlayerSide(initialScore.getPlayer2Pits(), initialScore.getPlayer2GravaHal());
     }
 
 
@@ -44,30 +31,30 @@ public class Game {
         if (isGameOver()) {
             throw new IllegalStateException("Game over");
         }
-        if (player1.getName().equals(playerName)) {
-            moveStones(selectedPit, player1Side, player2Side);
+        if (player1.name.equals(playerName)) {
+            moveStones(selectedPit, player1, player2);
         } else {
-            moveStones(selectedPit, player2Side, player1Side);
+            moveStones(selectedPit, player2, player1);
         }
         if (anyoneIsOutOfStones()) {
             calculateFinalScore();
             gameOver = true;
         }
-        return new Score(player1Side, player2Side);
+        return new Score(player1, player2);
     }
 
     private void calculateFinalScore() {
-        calculatePlayerScore(player1Side);
-        calculatePlayerScore(player2Side);
+        calculatePlayerScore(player1);
+        calculatePlayerScore(player2);
     }
 
-    private void calculatePlayerScore(PlayerSide playerSide) {
-        Arrays.stream(playerSide.pits).forEach(stone -> playerSide.gravaHal += stone);
-        Arrays.fill(playerSide.pits, 0);
+    private void calculatePlayerScore(Player player) {
+        Arrays.stream(player.pits).forEach(stone -> player.gravaHal += stone);
+        Arrays.fill(player.pits, 0);
     }
 
-    private void moveStones(int pickedPit, PlayerSide playerSide, PlayerSide opposingPlayerSide) {
-        new Go(pickedPit, playerSide, opposingPlayerSide).make();
+    private void moveStones(int pickedPit, Player player, Player opposingPlayer) {
+        new Go(pickedPit, player, opposingPlayer).make();
     }
 
     public boolean isGameOver() {
@@ -75,7 +62,7 @@ public class Game {
     }
 
     private boolean anyoneIsOutOfStones() {
-        return isPlayerOutOfStones(player1Side.pits) || isPlayerOutOfStones(player2Side.pits);
+        return isPlayerOutOfStones(player1.pits) || isPlayerOutOfStones(player2.pits);
     }
 
     private boolean isPlayerOutOfStones(int[] playerPits) {
@@ -86,41 +73,41 @@ public class Game {
         if (!isGameOver()) {
             throw new IllegalStateException("Game is not over yet");
         }
-        if (player1Side.gravaHal > player2Side.gravaHal) {
-            return player1.getName();
-        } else if (player2Side.gravaHal > player1Side.gravaHal) {
-            return player2.getName();
+        if (player1.gravaHal > player2.gravaHal) {
+            return player1.name;
+        } else if (player2.gravaHal > player1.gravaHal) {
+            return player2.name;
         } else {
             return "No winner. It's a tie";
         }
     }
 
     private class Go {
-        private PlayerSide playerSide;
-        private PlayerSide opposingPlayerSide;
+        private Player player;
+        private Player opposingPlayer;
         private int remainingStones;
         private int currentPit;
 
-        public Go(int selectedPit, PlayerSide playerSide, PlayerSide opposingPlayerSide) {
-            this.playerSide = playerSide;
-            this.opposingPlayerSide = opposingPlayerSide;
-            this.remainingStones = playerSide.pits[selectedPit];
+        public Go(int selectedPit, Player player, Player opposingPlayer) {
+            this.player = player;
+            this.opposingPlayer = opposingPlayer;
+            this.remainingStones = player.pits[selectedPit];
             this.currentPit = selectedPit + 1;
-            playerSide.pits[selectedPit] = 0;
+            player.pits[selectedPit] = 0;
         }
 
         public void make() {
             while(hasRemainingStones()) {
-                updatePits(playerSide);
-                if (canStealStonesFromOpposingPlayer(playerSide)) {
-                    stealStonesFromOpposingPlayerAndUpdateGravaHal(playerSide, opposingPlayerSide);
+                updatePits(player);
+                if (canStealStonesFromOpposingPlayer(player)) {
+                    stealStonesFromOpposingPlayerAndUpdateGravaHal(player, opposingPlayer);
                 }
                 if (hasRemainingStones()) {
-                    updateGravaHal(playerSide);
+                    updateGravaHal(player);
                 }
                 if (hasRemainingStones()) {
                     currentPit = 0;
-                    updatePits(opposingPlayerSide);
+                    updatePits(opposingPlayer);
                     currentPit = 0;
                 }
             }
@@ -130,26 +117,26 @@ public class Game {
             return remainingStones > 0;
         }
 
-        private void updatePits(PlayerSide playerSide) {
-            for (; currentPit < playerSide.pits.length && remainingStones > 0; currentPit++) {
-                playerSide.pits[currentPit]++;
+        private void updatePits(Player player) {
+            for (; currentPit < player.pits.length && remainingStones > 0; currentPit++) {
+                player.pits[currentPit]++;
                 remainingStones--;
             }
         }
 
-        private boolean canStealStonesFromOpposingPlayer(PlayerSide playerSide) {
-            return remainingStones == 0 && playerSide.pits[currentPit - 1] == 1;
+        private boolean canStealStonesFromOpposingPlayer(Player player) {
+            return remainingStones == 0 && player.pits[currentPit - 1] == 1;
         }
 
-        private void stealStonesFromOpposingPlayerAndUpdateGravaHal(PlayerSide playerSide, PlayerSide opposingPlayerSide) {
+        private void stealStonesFromOpposingPlayerAndUpdateGravaHal(Player player, Player opposingPlayer) {
             int lastEmptyPit = currentPit - 1;
-            playerSide.gravaHal += playerSide.pits[lastEmptyPit] + opposingPlayerSide.pits[lastEmptyPit];
-            playerSide.pits[lastEmptyPit] = 0;
-            opposingPlayerSide.pits[lastEmptyPit] = 0;
+            player.gravaHal += player.pits[lastEmptyPit] + opposingPlayer.pits[lastEmptyPit];
+            player.pits[lastEmptyPit] = 0;
+            opposingPlayer.pits[lastEmptyPit] = 0;
         }
 
-        private void updateGravaHal(PlayerSide playerSide) {
-            playerSide.gravaHal++;
+        private void updateGravaHal(Player player) {
+            player.gravaHal++;
             remainingStones--;
             if (remainingStones == 0) {
                 isLandedInGravaHal = true;
