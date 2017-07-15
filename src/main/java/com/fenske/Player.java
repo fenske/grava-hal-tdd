@@ -1,7 +1,9 @@
 package com.fenske;
 
 import lombok.NonNull;
+import lombok.ToString;
 
+@ToString
 class Player {
 
     final String name;

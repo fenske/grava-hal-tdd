@@ -1,10 +1,12 @@
 package com.fenske;
 
 import lombok.NonNull;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+@ToString
 public class Game {
 
     final Player player1;
