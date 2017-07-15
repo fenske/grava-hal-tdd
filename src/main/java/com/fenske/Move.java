@@ -1,6 +1,6 @@
 package com.fenske;
 
-import lombok.val;
+import lombok.NonNull;
 
 class Move {
     private Game game;
@@ -10,7 +10,7 @@ class Move {
     private int currentPit;
     private boolean isLandedInGravaHal;
 
-    Move(Game game, int selectedPit, Player player, Player opposingPlayer) {
+    Move(@NonNull Game game, int selectedPit, @NonNull Player player, @NonNull Player opposingPlayer) {
         this.game = game;
         this.player = player;
         this.opposingPlayer = opposingPlayer;
@@ -55,7 +55,7 @@ class Move {
     }
 
     private void stealStonesFromOpposingPlayerAndUpdateGravaHal(Player player, Player opposingPlayer) {
-        val lastEmptyPit = currentPit - 1;
+        final int lastEmptyPit = currentPit - 1;
         player.gravaHal += player.pits[lastEmptyPit] + opposingPlayer.pits[lastEmptyPit];
         player.pits[lastEmptyPit] = 0;
         opposingPlayer.pits[lastEmptyPit] = 0;

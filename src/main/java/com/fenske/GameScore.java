@@ -1,5 +1,7 @@
 package com.fenske;
 
+import lombok.NonNull;
+
 class GameScore {
 
     final int[] player1Pits;
@@ -7,7 +9,7 @@ class GameScore {
     final int[] player2Pits;
     final int player2GravaHal;
 
-    GameScore(Player player1, Player player2) {
+    GameScore(@NonNull Player player1, @NonNull Player player2) {
         this.player1Pits = player1.pits;
         this.player1GravaHal = player1.gravaHal;
         this.player2Pits = player2.pits;

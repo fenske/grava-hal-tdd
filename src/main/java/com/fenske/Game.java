@@ -1,5 +1,7 @@
 package com.fenske;
 
+import lombok.NonNull;
+
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -11,7 +13,7 @@ public class Game {
 
     private boolean gameOver;
 
-    public Game(Player player1, Player player2) {
+    public Game(@NonNull Player player1, @NonNull Player player2) {
         this.player1 = player1;
         this.player2 = player2;
         activePlayer = player1;
