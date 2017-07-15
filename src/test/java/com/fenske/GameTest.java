@@ -127,8 +127,7 @@ public class GameTest {
             new int[]{1,1,1,1,1,1}, 0);
 
         game.makeMove(5);
-        String activePlayerName = game.getActivePlayerName();
-        assertEquals(player1.name, activePlayerName);
+        assertEquals(player1.name, game.getActivePlayerName());
         game.makeMove(4);
         assertEquals(player2.name, game.getActivePlayerName());
     }
@@ -137,8 +136,7 @@ public class GameTest {
     public void shouldNotStealStonesFromYourSelf() {
         game = initGame(new int[]{1,1,1,1,1,3}, 0,
             new int[]{1,0,1,1,1,1}, 0);
-        GameScore gameScore = game.makeMove(5);
-        assertGameState(gameScore,
+        assertGameState(game.makeMove(5),
             new int[]{1,1,1,1,1,0}, 1,
             new int[]{2,1,1,1,1,1}, 0);
     }

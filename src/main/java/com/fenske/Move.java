@@ -1,5 +1,7 @@
 package com.fenske;
 
+import lombok.val;
+
 class Move {
     private Game game;
     private Player player;
@@ -53,7 +55,7 @@ class Move {
     }
 
     private void stealStonesFromOpposingPlayerAndUpdateGravaHal(Player player, Player opposingPlayer) {
-        int lastEmptyPit = currentPit - 1;
+        val lastEmptyPit = currentPit - 1;
         player.gravaHal += player.pits[lastEmptyPit] + opposingPlayer.pits[lastEmptyPit];
         player.pits[lastEmptyPit] = 0;
         opposingPlayer.pits[lastEmptyPit] = 0;
